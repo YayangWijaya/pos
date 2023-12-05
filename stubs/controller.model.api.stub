@@ -1,0 +1,78 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use {{ namespacedRequests }}
+use Illuminate\Http\Request;
+
+class {{ class }} extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        ${{ modelVariable }} = {{ model }}::when($request->keyword, function ($q) use ($request) {
+                            $q->where('name', 'ILIKE', "%" . $request->keyword . "%");
+                        })->orderBy('id','desc')->paginate(5);
+
+        return view('{{ modelVariable }}.index', compact('{{ modelVariable }}'));
+    }
+
+    public function create()
+    {
+        return view('{{ modelVariable }}.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store({{ storeRequest }} $request)
+    {
+        $request->validate([
+            //
+        ]);
+
+        {{ model }}::create($request->all());
+
+        return redirect()->route('{{ modelVariable }}.index')->with('success','Data berhasil disimpan.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        return view('{{ modelVariable }}.show',compact('{{ modelVariable }}'));
+    }
+
+    public function edit({{ model }} ${{ modelVariable }})
+    {
+        return view('{{ modelVariable }}.edit',compact('{{ modelVariable }}'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update({{ updateRequest }} $request, {{ model }} ${{ modelVariable }})
+    {
+        $request->validate([
+            //
+        ]);
+
+        ${{ modelVariable }}->update($request->all());
+
+        return redirect()->route('{{ modelVariable }}.index')->with('success','Data berhasil diupdate.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        ${{ modelVariable }}->delete();
+        return redirect()->route('{{ modelVariable }}.index')->with('success','Data berhasil dihapus.');
+    }
+}
